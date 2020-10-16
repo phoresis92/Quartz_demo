@@ -7,13 +7,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
-import tk.youngdk.quartz_demo.domain.Member;
-import tk.youngdk.quartz_demo.repository.MemberRepository;
-import tk.youngdk.quartz_demo.service.MemberService;
-
-
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import tk.youngdk.quartz_demo.quartz.job.HelloJob;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -24,7 +18,6 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @Slf4j
 public class QuartzRunner implements ApplicationRunner {
     private final Scheduler scheduler;
-    private final EntityManager em;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -58,25 +51,6 @@ public class QuartzRunner implements ApplicationRunner {
         }/* finally {
         }*/
 
-    }
-
-    @RequiredArgsConstructor
-    @Component
-    static class HelloJob implements Job {
-        private final MemberService memberService;
-        private final MemberRepository memberRepository;
-
-        @Transactional
-        @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            log.error("HelloJob");
-
-            Member t1 = new Member("t1");
-
-            memberService.saveMember(t1);
-
-//            log.error(memberRepository.findAll().toString());
-        }
     }
 
     static class RunMeJob extends QuartzJobBean {

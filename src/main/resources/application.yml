@@ -1,6 +1,6 @@
 
 server:
-  port: 7070
+  port: 8070
 
 spring:
   datasource:
@@ -45,7 +45,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       pool-size: 100
       use-new-id-generator-mappings: false
       naming:
