@@ -1,0 +1,66 @@
+
+server:
+  port: 7070
+
+spring:
+  datasource:
+    jpa:
+      url: jdbc:mysql://34.64.198.32:3307/quartz_jpa?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: try4321!@#$
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+    quartz:
+      url: jdbc:mysql://34.64.198.32:3307/quartz?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: try4321!@#$
+      driver-class-name: com.mysql.cj.jdbc.Driver
+#      platform: org.hibernate.dialect.MySQL57Dialect
+
+  quartz:
+    scheduler-name: Test
+    properties:
+      org.quartz:
+        scheduler:
+          instanceName: QUARTZ-DEMO
+          instanceId: AUTO
+          batchTriggerAcquisitionMaxCount: 20
+          idleWaitTime: 1000
+          skipUpdateCheck: true
+        threadPool:
+          threadCount: 20
+          threadNamePrefix: QuartzScheduler
+        jobStore:
+          class: org.quartz.impl.jdbcjobstore.JobStoreCMT
+          driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+          useProperties: true
+          misfireThreshold: 1100
+          tablePrefix: QRTZ_
+          isClustered: true
+          clusterCheckinInterval: 5000
+          acquireTriggersWithinLock: true
+    job-store-type: jdbc
+#    jdbc:
+#      initialize-schema: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      pool-size: 100
+      use-new-id-generator-mappings: false
+      naming:
+        physical-strategy: tk.youngdk.quartz_demo.config.jpa.PrefixPhysicalNamingStrategy
+    properties:
+      hibernate:
+        show_sql: false #true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+
+
+  logging:
+    level:
+      root: debug
+      org.hibernate:
+        SQL: debug
+        type: trace
