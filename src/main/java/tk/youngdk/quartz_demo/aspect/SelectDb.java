@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import tk.youngdk.quartz_demo.dto.request.BaseRequestDto;
 import tk.youngdk.quartz_demo.repository.gcp.GcpMemberRepository;
 import tk.youngdk.quartz_demo.repository.local.LocalMemberRepository;
 import tk.youngdk.quartz_demo.service.MemberServiceImpl;
@@ -19,7 +20,7 @@ public class SelectDb {
     private final GcpMemberRepository gcpMemberRepository;
     private final LocalMemberRepository localMemberRepository;
 
-    @Pointcut("execution(* tk.youngdk.quartz_demo.controller.*Controller.*(..))") // 이런 패턴이 실행될 경우 수행
+    @Pointcut("execution(* tk.youngdk.quartz_demo.controller.*Controller.*(..))")
     public void loggerPointCut() {
     }
 
@@ -34,15 +35,22 @@ public class SelectDb {
             }
         }
 
-        String companySeq = (String) joinPoint.getArgs()[1];
+        Object firstArg = joinPoint.getArgs()[0];
+        System.out.println("firstArg = " + firstArg);
+        String companySeq = null;
+
+        if (firstArg instanceof String) {
+            companySeq = (String) firstArg;
+        } else if (firstArg instanceof BaseRequestDto) {
+            companySeq = ((BaseRequestDto) firstArg).getCompanySeq();
+        }
+
         System.out.println("companySeq = " + companySeq);
         System.out.println("companySeq = " + companySeq);
 
         if (companySeq.equals("100")) {
-            System.out.println("100");
             memberService.setMemberRepository(gcpMemberRepository);
         }else if(companySeq.equals("101")){
-            System.out.println("101");
             memberService.setMemberRepository(localMemberRepository);
         }else{
             throw new Throwable("Not in companySeq");
@@ -54,9 +62,7 @@ public class SelectDb {
 
 //        return joinPoint.proceed(args);
 
-        return joinPoint.proceed(new Object[] {(String) joinPoint.getArgs()[0], companySeq});
-
-
+        return joinPoint.proceed(joinPoint.getArgs());
 
     }
 
