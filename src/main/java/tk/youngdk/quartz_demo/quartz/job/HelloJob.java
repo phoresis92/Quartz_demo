@@ -5,17 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.stereotype.Component;
 import tk.youngdk.quartz_demo.domain.Member;
-import tk.youngdk.quartz_demo.repository.MemberRepository;
+import tk.youngdk.quartz_demo.repository.gcp.GcpMemberRepository;
 import tk.youngdk.quartz_demo.service.MemberService;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class HelloJob implements Job {
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
+    private final GcpMemberRepository gcpMemberRepository;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -25,7 +24,7 @@ public class HelloJob implements Job {
 
         memberService.saveMember(t1);
 
-        log.error(memberRepository.findById(t1.getId()).toString());
+        log.error(gcpMemberRepository.findById(t1.getId()).toString());
 
     }
 }

@@ -7,4 +7,7 @@ import tk.youngdk.quartz_demo.domain.Member;
 import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
+
+    @Query("select m from Member m where m.userName = :name")
+    public List<Member> findByUserName(String name);
 }

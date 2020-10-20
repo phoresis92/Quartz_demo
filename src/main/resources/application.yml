@@ -10,6 +10,12 @@ spring:
       password: try4321!@#$
       driver-class-name: com.mysql.cj.jdbc.Driver
 
+    local:
+      url: jdbc:mysql://34.64.198.32:3307/quartz_local?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: try4321!@#$
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
     quartz:
       url: jdbc:mysql://34.64.198.32:3307/quartz?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
       username: root
@@ -17,29 +23,29 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
 #      platform: org.hibernate.dialect.MySQL57Dialect
 
-  quartz:
-    scheduler-name: Test
-    properties:
-      org.quartz:
-        scheduler:
-          instanceName: QUARTZ-DEMO
-          instanceId: AUTO
-          batchTriggerAcquisitionMaxCount: 20
-          idleWaitTime: 1000
-          skipUpdateCheck: true
-        threadPool:
-          threadCount: 20
-          threadNamePrefix: QuartzScheduler
-        jobStore:
-          class: org.quartz.impl.jdbcjobstore.JobStoreCMT
-          driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-          useProperties: true
-          misfireThreshold: 1100
-          tablePrefix: QRTZ_
-          isClustered: true
-          clusterCheckinInterval: 5000
-          acquireTriggersWithinLock: true
-    job-store-type: jdbc
+#  quartz:
+#    scheduler-name: Test
+#    properties:
+#      org.quartz:
+#        scheduler:
+#          instanceName: QUARTZ-DEMO
+#          instanceId: AUTO
+#          batchTriggerAcquisitionMaxCount: 20
+#          idleWaitTime: 1000
+#          skipUpdateCheck: true
+#        threadPool:
+#          threadCount: 20
+#          threadNamePrefix: QuartzScheduler
+#        jobStore:
+#          class: org.quartz.impl.jdbcjobstore.JobStoreCMT
+#          driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+#          useProperties: true
+#          misfireThreshold: 1100
+#          tablePrefix: QRTZ_
+#          isClustered: true
+#          clusterCheckinInterval: 5000
+#          acquireTriggersWithinLock: true
+#    job-store-type: jdbc
 #    jdbc:
 #      initialize-schema: always
 

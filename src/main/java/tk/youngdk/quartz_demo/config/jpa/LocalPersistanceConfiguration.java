@@ -3,10 +3,6 @@ package tk.youngdk.quartz_demo.config.jpa;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.AvailableSettings;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,18 +16,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.Properties;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 @EnableJpaRepositories(
-        basePackages = "tk.youngdk.quartz_demo",
-        entityManagerFactoryRef = "jpaEntityManagerFactory",
-        transactionManagerRef = "jpaTransactionManager"
+        basePackages = "tk.youngdk.quartz_demo.repository.local",
+        entityManagerFactoryRef = "LocalEntityManagerFactory",
+        transactionManagerRef = "LocalTransactionManager"
 )
-public class PersistanceConfiguration {
+public class LocalPersistanceConfiguration {
     private final Environment env;
 
     @PostConstruct
@@ -39,27 +34,25 @@ public class PersistanceConfiguration {
         log.error("PersistanceConfiguration");
     }
 
-    @Primary
     @Bean
-    public DataSource jpaDataSource() {
+    public DataSource LocalDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.jpa.driver-class-name"));
-        dataSource.setUrl(env.getProperty("spring.datasource.jpa.url"));
-        dataSource.setUsername(env.getProperty("spring.datasource.jpa.username"));
-        dataSource.setPassword(env.getProperty("spring.datasource.jpa.password"));
+        dataSource.setDriverClassName(env.getProperty("spring.datasource.local.driver-class-name"));
+        dataSource.setUrl(env.getProperty("spring.datasource.local.url"));
+        dataSource.setUsername(env.getProperty("spring.datasource.local.username"));
+        dataSource.setPassword(env.getProperty("spring.datasource.local.password"));
 
         return dataSource;
     }
 
-    @Primary
     @Bean
-    public LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setDataSource(jpaDataSource());
-        emf.setPackagesToScan(new String[] { "tk.youngdk.quartz_demo.domain" });
+    public LocalContainerEntityManagerFactoryBean LocalEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(LocalDataSource());
+        em.setPackagesToScan(new String[] { "tk.youngdk.quartz_demo.domain" });
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        emf.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaVendorAdapter(vendorAdapter);
 
         Properties props = new Properties();
         // create | create-drop | spawn | spawn-drop | update | validate | none
@@ -72,16 +65,15 @@ public class PersistanceConfiguration {
         props.setProperty(AvailableSettings.FORMAT_SQL, env.getProperty("spring.jpa.properties.hibernate.format_sql"));
         props.setProperty(AvailableSettings.DIALECT, env.getProperty("spring.jpa.properties.hibernate.dialect"));
 
-        emf.setJpaProperties(props);
+        em.setJpaProperties(props);
 
-        return emf;
+        return em;
     }
 
-    @Primary
     @Bean
-    public PlatformTransactionManager jpaTransactionManager() {
+    public PlatformTransactionManager LocalTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(jpaEntityManagerFactory().getObject());
+        transactionManager.setEntityManagerFactory(LocalEntityManagerFactory().getObject());
 
         return transactionManager;
     }

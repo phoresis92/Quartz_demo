@@ -17,13 +17,14 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @RequiredArgsConstructor
 @Slf4j
 public class QuartzRunner implements ApplicationRunner {
-    private final Scheduler scheduler;
+//    private final Scheduler scheduler;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         try {
 
-            scheduler.start();
+//            scheduler.shutdown();
+//            scheduler.start();
             // define the job and tie it to our HelloJob class
             JobDetail job = newJob(HelloJob.class)
                     .withIdentity("job1", "group1")
@@ -41,13 +42,9 @@ public class QuartzRunner implements ApplicationRunner {
             // Tell quartz to schedule the job using our trigger
 //            scheduler.scheduleJob(job, trigger);
 
-        } catch (SchedulerException se) {
-            log.error("ScheculerException");
-            se.printStackTrace();
-            scheduler.shutdown();
         } catch (Exception e){
             log.error("Exception");
-            scheduler.shutdown();
+//            scheduler.shutdown();
         }/* finally {
         }*/
 
