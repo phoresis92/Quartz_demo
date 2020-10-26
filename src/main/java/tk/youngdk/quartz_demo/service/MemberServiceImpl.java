@@ -1,31 +1,28 @@
 package tk.youngdk.quartz_demo.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import tk.youngdk.quartz_demo.domain.Member;
+import tk.youngdk.quartz_demo.dto.request.BaseRequestDto;
+import tk.youngdk.quartz_demo.exception.InvalidCompanySeqError;
 import tk.youngdk.quartz_demo.repository.MemberRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 @Service
-@Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService {
-    private MemberRepository memberRepository;
+@RequiredArgsConstructor
+public class MemberServiceImpl implements MemberService{
+    private final MemberRepository memberRepository;
 
-    public void setMemberRepository(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    @Override
+    public Member saveMember(BaseRequestDto baseRequestDto, Member member) throws InvalidCompanySeqError {
+        return memberRepository.save(member);
     }
 
     @Override
-    @Transactional
-    public Member saveMember(Member member) {
-        memberRepository.save(member);
-        return member;
-    }
-
-    @Override
-    public List<Member> getMember(String name) {
+    public List<Member> getMember(BaseRequestDto baseRequestDto, String name) throws InvalidCompanySeqError {
         return memberRepository.findByUserName(name);
     }
-
 }

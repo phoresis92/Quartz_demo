@@ -18,6 +18,8 @@ import tk.youngdk.quartz_demo.service.MemberService;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static tk.youngdk.quartz_demo.utils.Utils.getParams;
+
 @Component
 @Aspect
 @RequiredArgsConstructor
@@ -61,19 +63,4 @@ public class LoggerAspect {
         }
     }
 
-    /**
-     * request 에 담긴 정보를 JSONObject 형태로 반환한다.
-     * @param request
-     * @return
-     */
-    private static JSONObject getParams (HttpServletRequest request) throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        Enumeration<String> params = request.getParameterNames();
-        while (params.hasMoreElements()) {
-            String param = params.nextElement();
-            String replaceParam = param.replaceAll("\\.", "-");
-            jsonObject.put(replaceParam, request.getParameter(param));
-        }
-        return jsonObject;
-    }
 }
