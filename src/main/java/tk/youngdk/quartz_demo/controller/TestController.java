@@ -20,7 +20,8 @@ public class TestController {
 
     private final MemberService memberService;
 
-    @GetMapping("/test/{param}")
+//    @GetMapping("/test/{param}")
+    @PostMapping("/test/{param}")
     public Member postMember(
             @Valid BaseRequestDto baseRequestDto,
             @PathVariable("param") String param,
