@@ -5,15 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import tk.youngdk.quartz_demo.service.MemberService;
+import tk.youngdk.quartz_demo.config.datasource.DataSourceLookupKeyContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -26,7 +22,7 @@ import static tk.youngdk.quartz_demo.utils.Utils.getParams;
 @Slf4j
 public class LoggerAspect {
 
-    @Pointcut("execution(* tk.youngdk.quartz_demo.controller.*Controller.*(..))") // 이런 패턴이 실행될 경우 수행
+    @Pointcut("execution(* tk.youngdk.quartz_demo.controller.*Controller.*(..))")
     public void loggerPointCut() {
     }
 
@@ -61,6 +57,26 @@ public class LoggerAspect {
         } catch (Throwable throwable) {
             throw throwable;
         }
+    }
+
+
+    @Pointcut("execution(* tk.youngdk.quartz_demo.service.*DowhatService.*(..))")
+    public void dowhatPointCut() {
+    }
+
+    @Around("dowhatPointCut()")
+    public Object changeDowhatDataSource(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("LoggerAspect.changeDowhatDataSource");
+
+        DataSourceLookupKeyContextHolder.changeDowhat();
+
+        Object result = joinPoint.proceed();
+
+        DataSourceLookupKeyContextHolder.changeHotel();
+
+        System.out.println("LoggerAspect.changeDowhatDataSource");
+        return result;
+
     }
 
 }

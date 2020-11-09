@@ -10,6 +10,7 @@ import tk.youngdk.quartz_demo.domain.Member;
 import tk.youngdk.quartz_demo.dto.request.BaseRequestDto;
 import tk.youngdk.quartz_demo.exception.InvalidCompanySeqError;
 import tk.youngdk.quartz_demo.service.MemberService;
+import tk.youngdk.quartz_demo.service.TestDowhatService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,6 +20,23 @@ import java.util.List;
 public class TestController {
 
     private final MemberService memberService;
+    private final TestDowhatService testDowhatService;
+
+    @GetMapping("/test/dowhat")
+    public String dowhatController() throws InvalidCompanySeqError {
+        memberService.saveMember(new BaseRequestDto("100", "1000"), new Member("test1"));
+
+//        DataSourceLookupKeyContextHolder.set(DataSourceType.RAMADA);
+
+        testDowhatService.saveMember(new BaseRequestDto("100", "1000"), new Member("test2"));
+//        List<Member> test2Name = memberService.getMember(new BaseRequestDto("100", "1000"), "test2");
+
+
+        memberService.saveMember(new BaseRequestDto("100", "1000"), new Member("test3"));
+
+        return "testDowhat";
+
+    }
 
 //    @GetMapping("/test/{param}")
     @PostMapping("/test/{param}")
